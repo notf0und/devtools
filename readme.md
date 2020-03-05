@@ -59,7 +59,7 @@ It asks for the backup file to use and restore it to another selected database
 php artisan database:restore
 ```
 
-###Baskup and restore a database
+###Backup and restore a database
 
 Same as backup and restore commands combined:
 
@@ -73,4 +73,12 @@ This commands creates a policy, a group, a user and access keys and associate th
 
 ```bash
 php artisan s3:user
+```
+
+###SSH into a docker container
+
+Connects to a docker container running on local.
+
+```bash
+php artisan docker:ssh
 ```
