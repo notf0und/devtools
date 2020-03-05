@@ -5,7 +5,7 @@ Devtools is group of useful console functions for development made with Laravel 
 ## Install
 
 ```bash
-git clone ...
+git clone https://gonzartur@bitbucket.org/gonzartur/devtools.git
 cd devtools
 composer install
 ```
@@ -45,6 +45,7 @@ This command read mysql config files that contains login credentials and import 
 
 ####Create a database backup
 It creates a a database babckup in .sql.bz format and stores it. Path of file created is displayed in console output:
+
 ```bash
 php artisan database:backup
 ```
