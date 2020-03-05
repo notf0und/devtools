@@ -21,5 +21,4 @@ class Container extends Model
         'ports',
         'names',
     ];
-
 }
