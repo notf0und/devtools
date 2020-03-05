@@ -58,7 +58,7 @@ class DatabaseRestore extends Command
 
     private function restore($connection, $file)
     {
-        $command = "mysql --login-path=$connection->name -e 'drop schema if exists $connection->database; create schema $connection->database'";
+        $command = "mysql --login-path=$connection->name -e 'drop schema if exists `$connection->database`; create schema `$connection->database`'";
         $this->helpers->runProcess($command);
 
         $command = "bunzip2 < $file | mysql --login-path=$connection->name $connection->database";
