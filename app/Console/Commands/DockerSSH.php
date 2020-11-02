@@ -54,7 +54,6 @@ class DockerSSH extends Command
         foreach ($output as $container) {
             $container = preg_split('/ {2,}/', $container);
 
-
             $container = new Container([
                 'container_id'  => $container[0],
                 'image'         => $container[1],
@@ -71,7 +70,7 @@ class DockerSSH extends Command
         $user_choice = $this->choice('Choose a container to connect with:', $containers->pluck('names')->all(), 0);
 
         $selected_container = $containers->where('names', $user_choice)->first();
-        $command = 'docker exec -it ' . $selected_container->container_id . ' sh';
+        $command = 'docker exec -it ' . $selected_container->container_id . ' bash';
         $this->process->streamProcess($command);
         $this->process->clear();
 
