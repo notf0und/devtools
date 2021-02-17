@@ -44,7 +44,7 @@ class JetbrainsResetCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->configPath = getenv("HOME") . '/.config/JetBrains/';
+        $this->configPath = getenv("HOME") . '/.config/JetBrains';
         $this->userPreferencesPath = getenv("HOME") . '/.java/.userPrefs/jetbrains';
 
         $iterator = new DirectoryIterator($this->configPath);
@@ -70,6 +70,7 @@ class JetbrainsResetCommand extends Command
     }
 
     function deleteDir($path) {
+        $this->info("Deleting $path");
         if (empty($path) || $path === '/') {
             return false;
         }

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Database;
+use App\Models\Database;
 use Illuminate\Console\Command;
 
 class DatabaseImportConfig extends Command
