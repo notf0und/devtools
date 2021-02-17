@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Database;
+use App\Models\Database;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -10,7 +10,7 @@ class CommandHelpers
 {
     public function runProcess($input)
     {
-        $process = new Process($input);
+        $process = Process::fromShellCommandline($input);
         $process->setTimeout(360000);
         $process->run();
         if (!$process->isSuccessful()) {
@@ -22,7 +22,7 @@ class CommandHelpers
 
     public function streamProcess($input)
     {
-        $process = new Process($input);
+        $process = Process::fromShellCommandline($input);
         $process->setTimeout(360000);
         try {
             $process->setTty(true);
@@ -47,7 +47,7 @@ class CommandHelpers
      */
     public function generateConnection($command)
     {
-        
+
         if ($connection = $this->chooseConnection($command)) {
             $connection->database = $this->chooseDatabase($command, $connection->name);
             return $connection;
