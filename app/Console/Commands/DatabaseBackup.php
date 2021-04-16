@@ -55,7 +55,7 @@ class DatabaseBackup extends Command
         $timestamp = Carbon::now()->format('Y_m_d_His');
         $path = $this->generatePath($connection);
         $backup="$path/$timestamp.sql.bz2";
-        $command = "mysqldump --login-path=$connection->name $connection->database --opt --single-transaction --quick --compress | bzip2 -9 > $backup";
+        $command = "mysqldump --login-path=$connection->name $connection->database --opt --single-transaction --quick --compress --set-gtid-purged=OFF | bzip2 -9 > $backup";
         $this->helpers->runProcess($command);
 
         return $backup;
