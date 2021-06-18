@@ -1,62 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# About Devtools
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Devtools is group of useful console functions for development made with Laravel Framework
 
-## About Laravel
+## Install
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+```bash
+git clone https://gonzartur@bitbucket.org/gonzartur/devtools.git
+cd devtools
+composer install
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Edit .env file and add your configuration. An example below:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```dotenv
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=devtools
+DB_USERNAME=devtools
+DB_PASSWORD=secret
 
-## Learning Laravel
+#To use the s3:user command, the following variables are needed
+AWS_ACCESS_KEY_ID=aws-user-key
+AWS_SECRET_ACCESS_KEY=aws-user-secret
+AWS_DEFAULT_REGION=ap-southeast-2
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+If you don't need database functions, you can avoid this the following step and no database credentials are required on .env file:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+php artisan migrate
+```
 
-## Laravel Sponsors
+## Available commands
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+###Import SSH configurations
 
-### Premium Partners
+Import SSH connections configured on ~/.ssh/config file
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+```bash
+php artisan ssh:import
+```
 
-## Contributing
+###Add a lagoon project
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This command would connect to lagoon to get database configurations of a selected project.
 
-## Code of Conduct
+```bash
+php artisan lagoon:add
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+###Import database configurations
 
-## Security Vulnerabilities
+This command read mysql config files that contains login credentials and import them in application database.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+php artisan database:import
+```
 
-## License
+###Create a database backup
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+It creates a a database babckup in .sql.bz format and stores it. Path of file created is displayed in console output:
+
+```bash
+php artisan database:backup
+```
+
+###Restore a database backup
+
+It asks for the backup file to use and restore it to another selected database
+
+```bash
+php artisan database:restore
+```
+
+###Sync databases
+
+This command work as backup and restore at the same time but piping between databases without dump file generation:
+
+```bash
+php artisan database:sync
+```
+
+###Create an AWS user with access to selected S3 buckets only
+
+This command creates a policy, a group, a user, access keys and associate them in order to have a user that can access only to the selected S3 buckets
+
+```bash
+php artisan s3:user
+```
+
+###SSH into a docker container
+
+Connects to a docker container running on local.
+
+```bash
+php artisan docker:ssh
+```
