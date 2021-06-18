@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
-use Illuminate\Console\Command;
 
 class DatabaseBackup extends Command
 {
@@ -12,16 +10,14 @@ class DatabaseBackup extends Command
      *
      * @var string
      */
-    protected $signature = 'database:backup {--server=} {--database=}';
+    protected $signature = 'database:backup';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Backup a database';
-
-    protected $helpers;
+    protected $description = 'Backup database into a file';
 
     /**
      * Create a new command instance.
@@ -31,8 +27,6 @@ class DatabaseBackup extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $this->helpers = new CommandHelpers;
     }
 
     /**
@@ -42,38 +36,20 @@ class DatabaseBackup extends Command
      */
     public function handle()
     {
-        $connection = $this->helpers->generateConnection($this);
-        $this->line('Creating database backup.');
-        $backup = $this->backup($connection);
+        $this->info('Select origin:');
+        $origin = $this->chooseDatabase();
 
-        $this->line($backup);
-        return $backup;
-    }
-
-    private function backup($connection)
-    {
         $timestamp = Carbon::now()->format('Y_m_d_His');
-        $path = $this->generatePath($connection);
-        $backup="$path/$timestamp.sql.bz2";
-        $command = "mysqldump --login-path=$connection->name $connection->database --opt --single-transaction --quick --compress --set-gtid-purged=OFF | bzip2 -9 > $backup";
-        $this->helpers->runProcess($command);
+        $path = $origin->getAttribute('download_path');
+        $destination = "{$path}/{$timestamp}.sql.bz2";
 
-        return $backup;
-    }
+//        $command = "{$origin->getAttribute('mysqldump')} | bzip2 -9 > {$destination}";
+        $command = "{$origin->mysqldumpCommand(null, '| bzip2 -9')} > {$destination}";
 
-    private function generatePath($connection)
-    {
-        $path = "storage/app/database/backups/$connection->name/$connection->database";
-        $directories = explode('/', $path);
+        $this->line('Creating database backup.');
+        $this->runShellCommand($command);
+        $this->info($destination);
 
-        $currentPath = '';
-        foreach ($directories as $directory) {
-            $currentPath .= "$directory/";
-            if (!file_exists($currentPath)) {
-                mkdir($currentPath);
-            }
-        }
-
-        return $path;
+        return 0;
     }
 }
