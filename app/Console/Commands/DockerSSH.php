@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Container;
+use App\Models\Container;
 use Illuminate\Console\Command;
 
 class DockerSSH extends Command

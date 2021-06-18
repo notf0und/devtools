@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Database;
-use Illuminate\Console\Command;
 
 class DatabaseImportConfig extends Command
 {
@@ -12,7 +11,7 @@ class DatabaseImportConfig extends Command
      *
      * @var string
      */
-    protected $signature = 'database:cim';
+    protected $signature = 'database:import';
 
     /**
      * The console command description.
@@ -20,8 +19,6 @@ class DatabaseImportConfig extends Command
      * @var string
      */
     protected $description = 'Import database login configurations from mysql';
-
-    protected $process;
 
     /**
      * Create a new command instance.
@@ -31,7 +28,6 @@ class DatabaseImportConfig extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->process = new CommandHelpers;
     }
 
     /**
@@ -41,7 +37,7 @@ class DatabaseImportConfig extends Command
      */
     public function handle()
     {
-        $process = $this->process->runProcess('mysql_config_editor print --all');
+        $process = $this->runProcess('mysql_config_editor print --all');
         $output = $process->getOutput();
         preg_match_all("/\[[^\]]*\]/", $output, $match);
 
@@ -62,7 +58,7 @@ class DatabaseImportConfig extends Command
     public function import($login)
     {
 
-        $process = $this->process->runProcess("my_print_defaults -s $login");
+        $process = $this->runProcess("my_print_defaults -s $login");
         $output = $process->getOutput();
         if (strlen($output) === 0) {
             return null;

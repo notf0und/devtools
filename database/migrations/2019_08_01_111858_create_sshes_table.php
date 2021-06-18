@@ -16,10 +16,24 @@ class CreateSshesTable extends Migration
         Schema::create('sshes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('host');
-            $table->string('username');
+            $table->string('user')->nullable();
             $table->string('hostname');
-            $table->string('password');
-            $table->string('key');
+            $table->string('password')->nullable();
+            $table->smallInteger('port')->nullable();
+            $table->string('identity_file')->nullable();
+            $table->string('strict_host_key_checking')->nullable();
+            $table->string('user_known_host_file')->nullable();
+            $table->enum('log_level', [
+                'QUIET',
+                'FATAL',
+                'ERROR',
+                'INFO',
+                'VERBOSE',
+                'DEBUG',
+                'DEBUG1',
+                'DEBUG2',
+                'DEBUG3'
+            ])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

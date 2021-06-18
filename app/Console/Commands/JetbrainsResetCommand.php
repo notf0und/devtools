@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use DirectoryIterator;
-use Illuminate\Console\Command;
 
 class JetbrainsResetCommand extends Command
 {
@@ -45,7 +44,7 @@ class JetbrainsResetCommand extends Command
     {
         parent::__construct();
         $this->configPath = getenv("HOME") . '/.config/JetBrains';
-        $this->userPreferencesPath = getenv("HOME") . '/.java/.userPrefs/jetbrains';
+        $this->userPreferencesPath = getenv("HOME") . '/.java/.userPrefs';
 
         $iterator = new DirectoryIterator($this->configPath);
         $this->products = collect();
@@ -64,19 +63,24 @@ class JetbrainsResetCommand extends Command
     public function handle()
     {
         $product = $this->choice('Choose a database directory:', $this->products->toArray(), 0);
-        $this->deleteDir($this->userPreferencesPath);
-        $this->deleteDir($this->configPath . "/$product/eval");
-        $this->deleteDir($this->configPath . "/$product/options/other.xml" );
+        $this->delete($this->userPreferencesPath . '/prefs.xml');
+        $this->delete($this->userPreferencesPath . '/jetbrains');
+        $this->delete($this->configPath . "/$product/eval");
+        $this->delete($this->configPath . "/$product/options/other.xml");
+
+        return  0;
     }
 
-    function deleteDir($path) {
-        $this->info("Deleting $path");
-        if (empty($path) || $path === '/') {
-            return false;
+    private function delete($path): void
+    {
+        if (empty($path) || $path === '/' || !file_exists($path)) {
+            return;
         }
 
-        return is_file($path) ?
-            @unlink($path) :
-            array_map('unlink', glob("$path/*.*"));
+        $this->info("Deleting $path");
+
+        is_file($path) ?
+            unlink($path) :
+            exec("rm -rf {$path}");
     }
 }
