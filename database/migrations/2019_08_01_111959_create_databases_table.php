@@ -29,8 +29,8 @@ class CreateDatabasesTable extends Migration
             $table->string('prefix')->default('');
             $table->boolean('prefix_indexes')->default(true);
             $table->boolean('strict')->default(true);
-            $table->string('engine')->nullable()->default(NULL);
-            $table->json('options')->nullable()->default(NULL);
+            $table->string('engine')->nullable()->default(null);
+            $table->json('options')->nullable()->default(null);
             $table->bigInteger('ssh_id')->unsigned()->index()->nullable()->default(null);
             $table->foreign('ssh_id')->references('id')->on('sshes')->onDelete('restrict');
             $table->timestamps();
