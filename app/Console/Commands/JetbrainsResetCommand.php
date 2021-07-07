@@ -18,55 +18,29 @@ class JetbrainsResetCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Reset evaluation period oof a JetBrain product';
-
-    /**
-     * Default JetBrains config path.
-     */
-    protected $configPath;
-
-    /**
-     * Default JetBrains user preferences path.
-     */
-    protected $userPreferencesPath;
-
-    /**
-     * Available JetBrains products.
-     */
-    protected $products;
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->configPath = getenv("HOME") . '/.config/JetBrains';
-        $this->userPreferencesPath = getenv("HOME") . '/.java/.userPrefs';
-
-        $iterator = new DirectoryIterator($this->configPath);
-        $this->products = collect();
-        foreach ($iterator as $fileInfo) {
-            if (!$fileInfo->isDot()) {
-                $this->products->push($fileInfo->getFilename());
-            }
-        }
-    }
+    protected $description = 'Reset evaluation period of a JetBrain product';
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): int
     {
-        $product = $this->choice('Choose a database directory:', $this->products->toArray(), 0);
-        $this->delete($this->userPreferencesPath . '/prefs.xml');
-        $this->delete($this->userPreferencesPath . '/jetbrains');
-        $this->delete($this->configPath . "/$product/eval");
-        $this->delete($this->configPath . "/$product/options/other.xml");
+        $configPath = getenv('HOME') . '/.config/JetBrains';
+        $userPreferencesPath = getenv('HOME') . '/.java/.userPrefs';
+
+        $iterator = new DirectoryIterator($configPath);
+        $products = collect();
+        foreach ($iterator as $fileInfo) {
+            if (!$fileInfo->isDot()) {
+                $products->push($fileInfo->getFilename());
+            }
+        }
+
+        $product = $this->choice('Choose a product:', $products->toArray(), 0);
+        $this->delete($userPreferencesPath . '/prefs.xml');
+        $this->delete($userPreferencesPath . '/jetbrains');
+        $this->delete($configPath . "/$product/eval");
+        $this->delete($configPath . "/$product/options/other.xml");
 
         return  0;
     }
