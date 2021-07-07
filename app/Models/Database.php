@@ -61,7 +61,7 @@ class Database extends Model
         return $query->whereDoesntHave('ssh', fn($ssh) => $ssh->isLagoon());
     }
 
-    public function getIsLagoonAttribute()
+    public function getIsLagoonAttribute(): bool
     {
         $ssh = $this->ssh;
         return !!$ssh && $ssh->is_lagoon;
@@ -78,7 +78,7 @@ class Database extends Model
     /**
      * Get mysql as a command
      */
-    public function getMysqlattribute()
+    public function getMysqlAttribute()
     {
         return $this->mysqlCommand();
     }
@@ -113,7 +113,7 @@ class Database extends Model
             $this->attributes['port'],
             '-u',
             $this->attributes['username'],
-            '-p' . $this->attributes['password'],
+            $this->attributes['password'] ? "-p{$this->attributes['password']}" : null,
             $this->attributes['database'] ? "'{$this->attributes['database']}'" : null,
         ];
 
@@ -138,7 +138,7 @@ class Database extends Model
             $this->attributes['port'],
             '-u',
             $this->attributes['username'],
-            '-p' . $this->attributes['password'],
+            $this->attributes['password'] ? "-p{$this->attributes['password']}" : null,
             "'{$this->attributes['database']}'",
             '--opt',
             '--single-transaction',
