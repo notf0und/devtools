@@ -49,7 +49,12 @@
     <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
     <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass"/>
     <rule ref="rulesets/naming.xml/LongVariable" />
-    <rule ref="rulesets/naming.xml/ShortMethodName"/>
+    <rule ref="rulesets/naming.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" description="Minimum length for a method or function name" value="3"/>
+            <property name="exceptions" value="up" />
+        </properties>
+    </rule>
     <rule ref="rulesets/naming.xml/ShortVariable">
         <properties>
             <property name="minimum" description="Minimum length for a variable, property or parameter name" value="3"/>
