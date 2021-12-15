@@ -42,7 +42,9 @@ class DatabaseRestore extends Command
         $command = $destination->mysqlCommand(null, $refreshCommand);
         $destination->database = $dbName;
 
-        $this->runProcess($command);
+        if (!$destination->is_lagoon) {
+            $this->runProcess($command);
+        }
 
         $origin = Storage::path($file);
         $command = "bunzip2 < {$origin} | {$destination->mysql}";

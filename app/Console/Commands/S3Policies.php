@@ -62,16 +62,6 @@ class S3Policies extends Command
      */
     public function handle()
     {
-//        $this->output->getFormatter()->setStyle('key', new OutputFormatterStyle('orange', null, ['bold']));
-//        $this->output->getFormatter()->setStyle('value', new OutputFormatterStyle('red'));
-//
-//        $key = 'Username';
-//        $value = 'noob';
-//
-//        $this->output->writeln("<key>$key:</key>$value");
-//
-//        $this->comment("This text is Yellow with Blue background ");
-//        dd();
         $this->buckets = $this->selectBucket();
         $name = $this->generateName();
 
@@ -101,9 +91,12 @@ class S3Policies extends Command
 
         $buckets = array_column($result->get('Buckets'), 'Name');
 
-        return $this->select(
+        return $this->choice(
             'Select buckets that you want to give access to:',
-            $buckets
+            $buckets,
+            null,
+            null,
+            true
         );
     }
 
@@ -118,7 +111,8 @@ class S3Policies extends Command
         return$name;
     }
 
-    private function createAccessKey(array $user){
+    private function createAccessKey(array $user)
+    {
         $this->info("Creating access keys.");
         try {
             $result =  $this->iamClient->createAccessKey([
@@ -192,7 +186,8 @@ class S3Policies extends Command
         ];
     }
 
-    private function createUser(string $name){
+    private function createUser(string $name)
+    {
         $this->info("Creating user.");
 
         try {

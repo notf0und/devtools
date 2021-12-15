@@ -29,6 +29,12 @@
         "phpunit/phpunit": "^9.3.3",
         "squizlabs/php_codesniffer": "^3.6"
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mydansun/console-select.git"
+        }
+    ],
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
