@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use App\Models\Container;
 use Illuminate\Console\Command;
 
-class DockerSSH extends Command
+class DockerGetIP extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'docker:ssh';
+    protected $signature = 'docker:get-ip';
 
     /**
      * The console command description.
@@ -42,12 +42,16 @@ class DockerSSH extends Command
      */
     public function handle()
     {
-        $this->process->clear();
         $process = $this->process->runProcess('docker ps');
 
         $output = explode(PHP_EOL, $process->getOutput());
         array_shift($output);
         array_pop($output);
+
+        if (!$output) {
+            $this->error('No containers available');
+            return 0;
+        }
 
         $containers = collect();
 
@@ -67,13 +71,16 @@ class DockerSSH extends Command
             $containers->push($container);
         }
 
+        $this->process->clear();
         $user_choice = $this->choice('Choose a container to connect with:', $containers->pluck('names')->all(), 0);
 
         $selected_container = $containers->where('names', $user_choice)->first();
-        $command = 'docker exec -it ' . $selected_container->container_id . ' sh';
-        $this->process->streamProcess($command);
+        $command = "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $selected_container->names";
+        $output = explode(PHP_EOL, $this->process->runProcess($command)->getOutput());
         $this->process->clear();
+        $this->line("Container: $selected_container->names");
+        $this->line("IP: $output[0]");
 
-        return $containers;
+        return 0;
     }
 }
